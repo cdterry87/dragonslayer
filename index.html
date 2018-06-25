@@ -99,14 +99,16 @@
                     this.dragonTakeDamage(damage);
                 },
                 heroHeal: function() {
-                    var healing = this.rand(15,20);
+                    this.actionsDisabled = true;
+
+                    var healing = this.rand(15,25);
                     this.log('I am healed for ' + healing + ' health!');
 
                     this.heroHealth = this.heroHealth + healing;
 
                     setTimeout(function() {
                         vm.dragonAttack();
-                    }, 600);
+                    }, 300);
                 },
                 heroTakeDamage: function(damage) {
                     this.heroHealth = this.heroHealth - damage;
@@ -127,14 +129,14 @@
                         
                         setTimeout(function() {
                             vm.dragonAttack();
-                        }, 600);
+                        }, 300);
                     }, 300);
                 },
                 dragonAttack: function() {
                     if(this.dragonHealth <= 0) {
                         return;
                     }
-                    var damage = this.rand(8,25);
+                    var damage = this.rand(8,23);
                     this.log('Dragon dealt ' + damage + ' damage to me!');
 
                     this.dragonAttackAnimation();
