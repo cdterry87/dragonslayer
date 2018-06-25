@@ -5,32 +5,6 @@
     <script src="https://npmcdn.com/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="bulma.min.css">
     <link rel="stylesheet" href="app.css">
-
-    <style>
-        #background{background-image: url(background.png); background-repeat: no-repeat; background-size: cover;}
-        .container{color: white !important;}
-        
-        /* Attack Animations */
-        .heroAttack{margin-left: 30px;}
-        .dragonAttack{margin-right: 30px;}
-
-        .isHit{animation: hit 0.5s; animation-iteration-count: 1;}
-
-        /* Hit Animations */
-        @keyframes hit {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
-    </style>
 </head>
 <body>
     <div id="app">
@@ -41,9 +15,9 @@
             <Br/>
             <div class="has-text-centered">
                 <template v-if="isPlaying">
-                    <button id="attack" class="button is-info" @click="heroAttackAnimation">ATTACK</button>
-                    <button id="special-attack" class="button is-danger">SPECIAL ATTACK</button>
-                    <button id="heal" class="button is-success">HEAL</button>
+                    <button id="attack" class="button is-info" @click="heroAttack" :disabled="actionsDisabled">ATTACK</button>
+                    <button id="special-attack" class="button is-danger" :disabled="actionsDisabled">SPECIAL ATTACK</button>
+                    <button id="heal" class="button is-success" :disabled="actionsDisabled">HEAL</button>
                     <button id="give-up" class="button is-warning" @click="isPlaying = false">GIVE UP</button>
                 </template>
                 <template v-else>
@@ -51,16 +25,16 @@
                 </template>
             </div>
             <Br/>
-            <div class="columns is-mobile" id="background">
+            <div class="columns is-mobile" id="background" v-show="isPlaying">
                 <div class="column is-half is-half-mobile">
                     <h2 class="has-text-centered">Hero</h2>
-                    <progress id="hero_health" class="progress is-info is-large" value="" max="100"></progress>
-                    <img src="hero.png" id="hero_image" :class="{heroAttack: heroIsAttacking}">
+                    <progress id="hero_health" class="progress is-info is-large" :value="heroHealth" :max="heroMaxHealth"></progress>
+                    <img src="hero.png" id="hero_image" :class="{heroAttack: heroIsAttacking, isHit: dragonIsAttacking}">
                 </div>
                 <div class="column is-half is-half-mobile">
                     <h2 class="has-text-centered">Dragon</h2>
-                    <progress class="progress is-danger is-large" value="" max="100"></progress>
-                    <img src="dragon.png" id="dragon_image" :class="{isHit: heroIsAttacking}">
+                    <progress class="progress is-danger is-large" :value="dragonHealth" :max="dragonMaxHealth"></progress>
+                    <img src="dragon.png" id="dragon_image" :class="{dragonAttack: dragonIsAttacking, isHit: heroIsAttacking}">
                 </div>
             </div>
 
@@ -79,25 +53,97 @@
                 isPlaying: false,
                 heroIsAttacking: false,
                 dragonIsAttacking: false,
+                actionsDisabled: false,
+                heroHealth: 100,
+                heroMaxHealth: 100,
+                dragonHealth: 100,
+                dragonMaxHealth: 100,
 			},
 			methods: {
+                heroAttack: function() {
+                    this.heroAttackAnimation();
+
+                    var damage = this.rand(5,10);
+                    console.log('I dealt ' + damage + ' damage to dragon!');
+                },
+                heroSpecialAttack: function() {
+                    this.heroAttackAnimation();
+
+                    var damage = this.rand(5,10);
+                    console.log('I dealt ' + damage + ' critical damage to dragon!');
+                },
+                heroHeal: function() {
+                    this.heroHealAnimation();
+
+                    var healing = this.rand(10,15);
+                    console.log('I am healed for ' + healing + ' health!');
+                },
 				heroAttackAnimation: function() {
                     console.log('I am attacking!');
+                    this.actionsDisabled = true;
+
                     this.heroIsAttacking = true;
 
+                    vm = this;
                     setTimeout(function() {
-                        this.heroIsAttacking = false;
+                        vm.heroIsAttacking = false;
                         console.log('I am finished attacking!');
+                        
+                        setTimeout(function() {
+                            vm.dragonAttackAnimation();
+                        }, 600);
+                    }, 300);
+                },
+                heroHealAnimation: function() {
 
-                        console.log('hero is attacking? ' + this.heroIsAttacking);
-                    }, 200);
+                },
+                dragonAttack: function() {
+                    var damage = this.rand(5,10);
+                    console.log('Dealt ' + damage + ' damage to dragon!');
                 },
                 dragonAttackAnimation: function() {
+                    console.log('Dragon is attacking!');
+                    this.dragonIsAttacking = true;
 
+                    vm = this;
+                    setTimeout(function() {
+                        vm.dragonIsAttacking = false;
+                        console.log('Dragon finished attacking!');
+                        vm.actionsDisabled = false;
+                    }, 300);
                 },
+                rand: function(min, max) {
+                    return Math.floor(Math.random() * (max - min)) + min;
+                }
 			}
 		});
 		
-	</script>
+    </script>
+    
+    <style>
+        #background{background-image: url(background.png); background-repeat: no-repeat; background-size: cover;}
+        .container{color: white !important;}
+
+        /* Attack Animations */
+        .heroAttack{margin-left: 250px;}
+        .dragonAttack{position: relative; right: 250px;}
+
+        .isHit{animation: hit 0.5s; animation-iteration-count: 1;}
+
+        /* Hit Animations */
+        @keyframes hit {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+    </style>
 </body>
 </html>
