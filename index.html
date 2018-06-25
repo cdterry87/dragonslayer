@@ -16,8 +16,8 @@
             <div class="has-text-centered">
                 <template v-if="isPlaying">
                     <button id="attack" class="button is-info" @click="heroAttack" :disabled="actionsDisabled">ATTACK</button>
-                    <button id="special-attack" class="button is-danger" :disabled="actionsDisabled">SPECIAL ATTACK</button>
-                    <button id="heal" class="button is-success" :disabled="actionsDisabled">HEAL</button>
+                    <button id="special-attack" class="button is-danger" @click="heroSpecialAttack" :disabled="actionsDisabled">SPECIAL ATTACK</button>
+                    <button id="heal" class="button is-success" @click="heroHeal" :disabled="actionsDisabled">HEAL</button>
                     <button id="give-up" class="button is-warning" @click="isPlaying = false">GIVE UP</button>
                 </template>
                 <template v-else>
@@ -41,7 +41,7 @@
             <br/>
 
             <div id="log">
-
+                
             </div>
         </div>
     </div>
@@ -63,20 +63,29 @@
                 heroAttack: function() {
                     this.heroAttackAnimation();
 
-                    var damage = this.rand(5,10);
+                    var damage = this.rand(5,13);
                     console.log('I dealt ' + damage + ' damage to dragon!');
+
+                    this.dragonTakeDamage(damage);
                 },
                 heroSpecialAttack: function() {
                     this.heroAttackAnimation();
 
-                    var damage = this.rand(5,10);
+                    var damage = this.rand(17,25);
                     console.log('I dealt ' + damage + ' critical damage to dragon!');
+
+                    this.dragonTakeDamage(damage);
                 },
                 heroHeal: function() {
                     this.heroHealAnimation();
 
                     var healing = this.rand(10,15);
                     console.log('I am healed for ' + healing + ' health!');
+
+                    this.heroHealth = this.heroHealth + healing;
+                },
+                heroTakeDamage: function(damage) {
+                    this.heroHealth = this.heroHealth - damage;
                 },
 				heroAttackAnimation: function() {
                     console.log('I am attacking!');
@@ -90,7 +99,7 @@
                         console.log('I am finished attacking!');
                         
                         setTimeout(function() {
-                            vm.dragonAttackAnimation();
+                            vm.dragonAttack();
                         }, 600);
                     }, 300);
                 },
@@ -98,8 +107,12 @@
 
                 },
                 dragonAttack: function() {
-                    var damage = this.rand(5,10);
-                    console.log('Dealt ' + damage + ' damage to dragon!');
+                    var damage = this.rand(8,25);
+                    console.log('Dragon dealt ' + damage + ' damage to me!');
+
+                    this.dragonAttackAnimation();
+
+                    this.heroTakeDamage(damage);
                 },
                 dragonAttackAnimation: function() {
                     console.log('Dragon is attacking!');
@@ -112,9 +125,13 @@
                         vm.actionsDisabled = false;
                     }, 300);
                 },
+                dragonTakeDamage: function(damage) {
+                    this.dragonHealth = this.dragonHealth - damage;
+                },
                 rand: function(min, max) {
                     return Math.floor(Math.random() * (max - min)) + min;
-                }
+                },
+                
 			}
 		});
 		
