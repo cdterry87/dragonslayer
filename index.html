@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Monster Slayer</title>
+    <meta charset="utf-8" />
+    <title>DRAGONSLAYER - by Chase Terry</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <script src="https://npmcdn.com/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="bulma.min.css">
-    <link rel="stylesheet" href="app.css">
 </head>
 <body>
     <div id="app">
@@ -16,7 +17,7 @@
             <div class="has-text-centered">
                 <template v-if="isPlaying">
                     <button id="attack" class="button is-info" @click="heroAttack" :disabled="actionsDisabled">ATTACK</button>
-                    <button id="special-attack" class="button is-danger" @click="heroSpecialAttack" :disabled="actionsDisabled">SPECIAL ATTACK</button>
+                    <button id="special-attack" class="button is-danger" @click="heroSpecialAttack" :disabled="specialDisabled">SPECIAL ATTACK</button>
                     <button id="heal" class="button is-success" @click="heroHeal" :disabled="actionsDisabled">HEAL</button>
                     <button id="give-up" class="button is-warning" @click="isPlaying = false; reset()">END GAME</button>
                 </template>
@@ -38,8 +39,6 @@
                 </div>
             </div>
 
-            <br/>
-
             <div id="log" class="panel" v-show="isPlaying">
                 <div class="panel-heading">
                     Battle Log
@@ -54,6 +53,12 @@
                     </div>
                 </template>
             </div>
+
+            <hr/>
+
+            <footer class="has-text-centered">
+                DRAGONSLAYER - by Chase Terry
+            </footer>
         </div>
     </div>
 
@@ -72,8 +77,23 @@
                 heroMaxHealth: 100,
                 dragonHealth: 100,
                 dragonMaxHealth: 100,
+                specialChargeCounter: 0,
+                specialChargeReq: 3,
                 logs: [],
 			},
+            computed: {
+                specialDisabled: function() {
+                    if(this.actionsDisabled) {
+                        return true;
+                    }
+
+                    if(this.specialChargeCounter < this.specialChargeReq) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            },
 			methods: {
                 reset: function() {
                     this.actionsDisabled = false;
@@ -81,9 +101,12 @@
                     this.heroWins = true;
                     this.heroHealth =  this.heroMaxHealth;
                     this.dragonHealth =  this.dragonMaxHealth;
+                    this.specialChargeCounter = 0;
                 },
                 heroAttack: function() {
                     this.heroAttackAnimation();
+
+                    this.specialChargeCounter++;
 
                     var damage = this.rand(5,13);
                     this.log('I dealt ' + damage + ' damage to dragon!');
@@ -92,6 +115,8 @@
                 },
                 heroSpecialAttack: function() {
                     this.heroAttackAnimation();
+
+                    this.specialChargeCounter = 0;
 
                     var damage = this.rand(17,25);
                     this.log('I dealt ' + damage + ' critical damage to dragon!');
@@ -146,11 +171,11 @@
                 dragonAttackAnimation: function() {
                     this.log('Dragon is attacking!');
                     this.dragonIsAttacking = true;
+                    this.actionsDisabled = false;
 
                     vm = this;
                     setTimeout(function() {
                         vm.dragonIsAttacking = false;
-                        vm.actionsDisabled = false;
                     }, 300);
                 },
                 dragonTakeDamage: function(damage) {
@@ -187,8 +212,9 @@
     </script>
     
     <style>
-        #background{background-image: url(background.png); background-repeat: no-repeat; background-size: cover;}
-        .container{color: white !important;}
+        #background{background-image: url(background.png); background-repeat: no-repeat; background-size: cover; border-radius: 5px; box-shadow: 1px 2px 3px #333;}
+        .container{color: white !important; max-width: 600px;}
+        footer{color: #333 !important;}
 
         /* Attack Animations */
         .heroAttack{margin-left: 250px;}
@@ -211,6 +237,12 @@
             80% { transform: translate(-1px, -1px) rotate(1deg); }
             90% { transform: translate(1px, 2px) rotate(0deg); }
             100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        @media screen and (max-width: 500px) {
+            .button, .panel{font-size: 10px;}
+            .heroAttack{margin-left: 150px;}
+            .dragonAttack{position: relative; right: 250px;}
         }
     </style>
 </body>
