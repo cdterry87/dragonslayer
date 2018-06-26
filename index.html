@@ -44,14 +44,9 @@
                     Battle Log
                 </div>
                 <div class="panel-block" v-for="log in logs">{{ log }}</div>
-                <template v-if="gameOver">
-                    <div class="panel-block" v-show="heroWins">
-                        Game Over! You were defeated by the dragon!
-                    </div>
-                    <div class="panel-block" v-show="!heroWins">
-                        Congratulations! You defeated the dragon!
-                    </div>
-                </template>
+                <div class="panel-block">
+                    The battle begins!
+                </div>
             </div>
 
             <hr/>
@@ -102,6 +97,7 @@
                     this.heroHealth =  this.heroMaxHealth;
                     this.dragonHealth =  this.dragonMaxHealth;
                     this.specialChargeCounter = 0;
+                    this.logs = [];
                 },
                 heroAttack: function() {
                     this.heroAttackAnimation();
