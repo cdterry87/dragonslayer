@@ -76,6 +76,23 @@
                 specialChargeReq: 3,
                 logs: [],
 			},
+            watch: {
+                dragonHealth: function() {
+                    if(this.dragonHealth <= 0) {
+                        alert('Dragon is dead!');
+                    }
+                },
+                heroHealth: function() {
+                    if(this.heroHealth <= 0) {
+                        alert('Hero is dead!');
+                    }
+                },
+                specialChargeCounter: function() {
+                    if(this.specialChargeCounter == 3) {
+                        alert('Special is ready!');
+                    }
+                }
+            },
             computed: {
                 specialDisabled: function() {
                     if(this.actionsDisabled) {
@@ -105,7 +122,7 @@
                     this.specialChargeCounter++;
 
                     var damage = this.rand(5,13);
-                    this.log('I dealt ' + damage + ' damage to dragon!');
+                    this.log('You attacked the dragon for ' + damage + ' damage!');
 
                     this.dragonTakeDamage(damage);
                 },
@@ -115,7 +132,7 @@
                     this.specialChargeCounter = 0;
 
                     var damage = this.rand(17,25);
-                    this.log('I dealt ' + damage + ' critical damage to dragon!');
+                    this.log('You dealt ' + damage + ' critical damage to dragon!');
 
                     this.dragonTakeDamage(damage);
                 },
@@ -123,7 +140,7 @@
                     this.actionsDisabled = true;
 
                     var healing = this.rand(15,25);
-                    this.log('I am healed for ' + healing + ' health!');
+                    this.log('You are healed for ' + healing + ' health!');
 
                     this.heroHealth = this.heroHealth + healing;
 
@@ -139,7 +156,7 @@
                     }
                 },
 				heroAttackAnimation: function() {
-                    this.log('I am attacking!');
+                    this.log('You are attacking!');
                     this.actionsDisabled = true;
 
                     this.heroIsAttacking = true;
@@ -158,11 +175,12 @@
                         return;
                     }
                     var damage = this.rand(8,23);
-                    this.log('Dragon dealt ' + damage + ' damage to me!');
 
                     this.dragonAttackAnimation();
 
                     this.heroTakeDamage(damage);
+
+                    this.log('Dragon attacks you for ' + damage + ' damage!');
                 },
                 dragonAttackAnimation: function() {
                     this.log('Dragon is attacking!');
