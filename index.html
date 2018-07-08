@@ -18,7 +18,7 @@
                 <template v-if="isPlaying">
                     <button id="attack" class="button is-info" @click="heroAttack" :disabled="actionsDisabled">ATTACK</button>
                     <button id="special-attack" class="button is-danger" @click="heroSpecialAttack" :disabled="specialDisabled">SPECIAL ATTACK</button>
-                    <button id="heal" class="button is-success" @click="heroHeal" :disabled="actionsDisabled">HEAL</button>
+                    <button id="heal" class="button is-success" @click="heroHeal" :disabled="healDisabled">HEAL</button>
                     <button id="give-up" class="button is-warning" @click="isPlaying = false; reset()">END GAME</button>
                 </template>
                 <template v-else>
@@ -73,7 +73,9 @@
                 dragonHealth: 100,
                 dragonMaxHealth: 100,
                 specialChargeCounter: 0,
-                specialChargeReq: 3,
+                specialChargeRequired: 3,
+                healChargeCounter: 0,
+                healChargeMaximum: 8,
                 logs: [],
 			},
             watch: {
@@ -91,7 +93,8 @@
                     if(this.specialChargeCounter == 3) {
                         alert('Special is ready!');
                     }
-                }
+                },
+                
             },
             computed: {
                 specialDisabled: function() {
@@ -99,7 +102,18 @@
                         return true;
                     }
 
-                    if(this.specialChargeCounter < this.specialChargeReq) {
+                    if(this.specialChargeCounter < this.specialChargeRequired) {
+                        return true;
+                    }
+
+                    return false;
+                },
+                healDisabled: function() {
+                    if(this.actionsDisabled) {
+                        return true;
+                    }
+
+                    if(this.healChargeCounter > this.healChargeMaximum) {
                         return true;
                     }
 
@@ -114,6 +128,7 @@
                     this.heroHealth =  this.heroMaxHealth;
                     this.dragonHealth =  this.dragonMaxHealth;
                     this.specialChargeCounter = 0;
+                    this.healChargeCounter = 0;
                     this.logs = [];
                 },
                 heroAttack: function() {
@@ -139,11 +154,18 @@
                 heroHeal: function() {
                     this.actionsDisabled = true;
 
+                    this.healChargeCounter++;
+
                     var healing = this.rand(15,25);
                     this.log('You are healed for ' + healing + ' health!');
 
                     this.heroHealth = this.heroHealth + healing;
 
+                    if(this.heroHealth > this.heroMaxHealth) {
+                        this.heroHealth = this.heroMaxHealth;
+                    }
+
+                    vm = this;
                     setTimeout(function() {
                         vm.dragonAttack();
                     }, 300);
