@@ -26,6 +26,14 @@
                 </template>
             </div>
             <Br/>
+            <div id="counters" class="columns is-mobile" v-show="isPlaying">
+                <div class="column is-half is-half-mobile">
+                    Special Attack Charge: {{ specialChargeRequired - specialChargeCounter }}
+                </div>
+                <div class="column is-half is-half-mobile">
+                    Heals Remaining: {{ healChargeMaximum - healChargeCounter }}
+                </div>
+            </div>
             <div class="columns is-mobile" id="background" v-show="isPlaying">
                 <div class="column is-half is-half-mobile">
                     <h2 class="has-text-centered">Hero</h2>
@@ -250,6 +258,7 @@
     <style>
         #background{background-image: url(background.png); background-repeat: no-repeat; background-size: cover; border-radius: 5px; box-shadow: 1px 2px 3px #333;}
         .container{color: white !important; max-width: 600px;}
+        #counters{color: black !important;}
         footer{color: #333 !important;}
 
         /* Attack Animations */
