@@ -2,10 +2,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>DRAGONSLAYER - by Chase Terry</title>
+    <title>DRAGONSLAYER by Chase Terry</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
-    <link rel="stylesheet" href="bulma.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
   </head>
   <body>
     <div id="app">
@@ -78,7 +81,7 @@
               :max="heroMaxHealth"
             ></progress>
             <img
-              src="hero.png"
+              src="./images/hero.png"
               id="hero_image"
               :class="{heroAttack: heroIsAttacking, isHit: dragonIsAttacking, death: !heroWins}"
             />
@@ -91,7 +94,7 @@
               :max="dragonMaxHealth"
             ></progress>
             <img
-              src="dragon.png"
+              src="./images/dragon.png"
               id="dragon_image"
               :class="{dragonAttack: dragonIsAttacking, isHit: heroIsAttacking, death: !dragonWins}"
             />
@@ -300,7 +303,7 @@
 
     <style>
       #background {
-        background-image: url(background.png);
+        background-image: url('./images/background.png');
         background-repeat: no-repeat;
         background-size: cover;
         border-radius: 5px;
