@@ -1,294 +1,390 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8" />
     <title>DRAGONSLAYER - by Chase Terry</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <script src="https://npmcdn.com/vue/dist/vue.js"></script>
-    <link rel="stylesheet" href="bulma.min.css">
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+    <link rel="stylesheet" href="bulma.min.css" />
+  </head>
+  <body>
     <div id="app">
-        <div class="container">
-            <div class="has-text-centered">
-                <h1 class="title is-3">DRAGONSLAYER</h1>
-            </div>
-            <Br/>
-            <div class="has-text-centered">
-                <template v-if="isPlaying">
-                    <button id="attack" class="button is-info" @click="heroAttack" :disabled="actionsDisabled">ATTACK</button>
-                    <button id="special-attack" class="button is-danger" @click="heroSpecialAttack" :disabled="specialDisabled">SPECIAL ATTACK</button>
-                    <button id="heal" class="button is-success" @click="heroHeal" :disabled="healDisabled">HEAL</button>
-                    <button id="give-up" class="button is-warning" @click="isPlaying = false; reset()">END GAME</button>
-                </template>
-                <template v-else>
-                    <button id="start-game" class="button is-success" @click="isPlaying = true">PLAY</button>
-                </template>
-            </div>
-            <Br/>
-            <div id="counters" class="columns is-mobile" v-show="isPlaying">
-                <div class="column is-half is-half-mobile">
-                    Special Attack Charge: {{ specialChargeRequired - specialChargeCounter }}
-                </div>
-                <div class="column is-half is-half-mobile">
-                    Heals Remaining: {{ healChargeMaximum - healChargeCounter }}
-                </div>
-            </div>
-            <div class="columns is-mobile" id="background" v-show="isPlaying">
-                <div class="column is-half is-half-mobile">
-                    <h2 class="has-text-centered">Hero</h2>
-                    <progress id="hero_health" class="progress is-info is-large" :value="heroHealth" :max="heroMaxHealth"></progress>
-                    <img src="hero.png" id="hero_image" :class="{heroAttack: heroIsAttacking, isHit: dragonIsAttacking, death: !heroWins}">
-                </div>
-                <div class="column is-half is-half-mobile">
-                    <h2 class="has-text-centered">Dragon</h2>
-                    <progress class="progress is-danger is-large" :value="dragonHealth" :max="dragonMaxHealth"></progress>
-                    <img src="dragon.png" id="dragon_image" :class="{dragonAttack: dragonIsAttacking, isHit: heroIsAttacking, death: !dragonWins}">
-                </div>
-            </div>
-
-            <div id="log" class="panel" v-show="isPlaying">
-                <div class="panel-heading">
-                    Battle Log
-                </div>
-                <div class="panel-block" v-for="log in logs">{{ log }}</div>
-                <div class="panel-block">
-                    The battle begins!
-                </div>
-            </div>
-
-            <hr/>
-
-            <footer class="has-text-centered">
-                DRAGONSLAYER - by Chase Terry
-            </footer>
+      <div class="container">
+        <div class="has-text-centered">
+          <h1 class="title is-3">DRAGONSLAYER</h1>
         </div>
+        <br />
+        <div class="has-text-centered">
+          <template v-if="isPlaying">
+            <button
+              id="attack"
+              class="button is-info"
+              @click="heroAttack"
+              :disabled="actionsDisabled"
+            >
+              ATTACK
+            </button>
+            <button
+              id="special-attack"
+              class="button is-danger"
+              @click="heroSpecialAttack"
+              :disabled="specialDisabled"
+            >
+              SPECIAL ATTACK
+            </button>
+            <button
+              id="heal"
+              class="button is-success"
+              @click="heroHeal"
+              :disabled="healDisabled"
+            >
+              HEAL
+            </button>
+            <button
+              id="give-up"
+              class="button is-warning"
+              @click="isPlaying = false; reset()"
+            >
+              END GAME
+            </button>
+          </template>
+          <template v-else>
+            <button
+              id="start-game"
+              class="button is-success"
+              @click="isPlaying = true"
+            >
+              PLAY
+            </button>
+          </template>
+        </div>
+        <br />
+        <div id="counters" class="columns is-mobile" v-show="isPlaying">
+          <div class="column is-half is-half-mobile">
+            Special Attack Charge: {{ specialChargeRequired -
+            specialChargeCounter }}
+          </div>
+          <div class="column is-half is-half-mobile">
+            Heals Remaining: {{ healChargeMaximum - healChargeCounter }}
+          </div>
+        </div>
+        <div class="columns is-mobile" id="background" v-show="isPlaying">
+          <div class="column is-half is-half-mobile">
+            <h2 class="has-text-centered">Hero</h2>
+            <progress
+              id="hero_health"
+              class="progress is-info is-large"
+              :value="heroHealth"
+              :max="heroMaxHealth"
+            ></progress>
+            <img
+              src="hero.png"
+              id="hero_image"
+              :class="{heroAttack: heroIsAttacking, isHit: dragonIsAttacking, death: !heroWins}"
+            />
+          </div>
+          <div class="column is-half is-half-mobile">
+            <h2 class="has-text-centered">Dragon</h2>
+            <progress
+              class="progress is-danger is-large"
+              :value="dragonHealth"
+              :max="dragonMaxHealth"
+            ></progress>
+            <img
+              src="dragon.png"
+              id="dragon_image"
+              :class="{dragonAttack: dragonIsAttacking, isHit: heroIsAttacking, death: !dragonWins}"
+            />
+          </div>
+        </div>
+
+        <div id="log" class="panel" v-show="isPlaying">
+          <div class="panel-heading">Battle Log</div>
+          <div class="panel-block" v-for="log in logs">{{ log }}</div>
+          <div class="panel-block">The battle begins!</div>
+        </div>
+
+        <hr />
+
+        <footer class="has-text-centered">DRAGONSLAYER - by Chase Terry</footer>
+      </div>
     </div>
 
     <script>
-		var app = new Vue({
-			el: '#app',
-			data: {
-                isPlaying: false,
-                gameOver: false,
-                heroWins: true,
-                dragonWins: true,
-                heroIsAttacking: false,
-                dragonIsAttacking: false,
-                actionsDisabled: false,
-                heroHealth: 100,
-                heroMaxHealth: 100,
-                dragonHealth: 100,
-                dragonMaxHealth: 100,
-                specialChargeCounter: 0,
-                specialChargeRequired: 3,
-                healChargeCounter: 0,
-                healChargeMaximum: 8,
-                logs: [],
-			},
-            watch: {
-                dragonHealth: function() {
-                    if(this.dragonHealth <= 0) {
-                        alert('Dragon is dead!');
-                    }
-                },
-                heroHealth: function() {
-                    if(this.heroHealth <= 0) {
-                        alert('Hero is dead!');
-                    }
-                },
-                specialChargeCounter: function() {
-                    if(this.specialChargeCounter == 3) {
-                        alert('Special is ready!');
-                    }
-                },
-                
-            },
-            computed: {
-                specialDisabled: function() {
-                    if(this.actionsDisabled) {
-                        return true;
-                    }
+      var app = new Vue({
+        el: '#app',
+        data: {
+          isPlaying: false,
+          gameOver: false,
+          heroWins: true,
+          dragonWins: true,
+          heroIsAttacking: false,
+          dragonIsAttacking: false,
+          actionsDisabled: false,
+          heroHealth: 100,
+          heroMaxHealth: 100,
+          dragonHealth: 100,
+          dragonMaxHealth: 100,
+          specialChargeCounter: 0,
+          specialChargeRequired: 3,
+          healChargeCounter: 0,
+          healChargeMaximum: 8,
+          logs: []
+        },
+        watch: {
+          dragonHealth: function () {
+            if (this.dragonHealth <= 0) {
+              alert('Dragon is dead!')
+            }
+          },
+          heroHealth: function () {
+            if (this.heroHealth <= 0) {
+              alert('Hero is dead!')
+            }
+          },
+          specialChargeCounter: function () {
+            if (this.specialChargeCounter == 3) {
+              alert('Special is ready!')
+            }
+          }
+        },
+        computed: {
+          specialDisabled: function () {
+            if (this.actionsDisabled) {
+              return true
+            }
 
-                    if(this.specialChargeCounter < this.specialChargeRequired) {
-                        return true;
-                    }
+            if (this.specialChargeCounter < this.specialChargeRequired) {
+              return true
+            }
 
-                    return false;
-                },
-                healDisabled: function() {
-                    if(this.actionsDisabled) {
-                        return true;
-                    }
+            return false
+          },
+          healDisabled: function () {
+            if (this.actionsDisabled) {
+              return true
+            }
 
-                    if(this.healChargeCounter > this.healChargeMaximum) {
-                        return true;
-                    }
+            if (this.healChargeCounter > this.healChargeMaximum) {
+              return true
+            }
 
-                    return false;
-                }
-            },
-			methods: {
-                reset: function() {
-                    this.actionsDisabled = false;
-                    this.dragonWins = true;
-                    this.heroWins = true;
-                    this.heroHealth =  this.heroMaxHealth;
-                    this.dragonHealth =  this.dragonMaxHealth;
-                    this.specialChargeCounter = 0;
-                    this.healChargeCounter = 0;
-                    this.logs = [];
-                },
-                heroAttack: function() {
-                    this.heroAttackAnimation();
+            return false
+          }
+        },
+        methods: {
+          reset: function () {
+            this.actionsDisabled = false
+            this.dragonWins = true
+            this.heroWins = true
+            this.heroHealth = this.heroMaxHealth
+            this.dragonHealth = this.dragonMaxHealth
+            this.specialChargeCounter = 0
+            this.healChargeCounter = 0
+            this.logs = []
+          },
+          heroAttack: function () {
+            this.heroAttackAnimation()
 
-                    this.specialChargeCounter++;
+            this.specialChargeCounter++
 
-                    var damage = this.rand(5,13);
-                    this.log('You attacked the dragon for ' + damage + ' damage!');
+            var damage = this.rand(5, 13)
+            this.log('You attacked the dragon for ' + damage + ' damage!')
 
-                    this.dragonTakeDamage(damage);
-                },
-                heroSpecialAttack: function() {
-                    this.heroAttackAnimation();
+            this.dragonTakeDamage(damage)
+          },
+          heroSpecialAttack: function () {
+            this.heroAttackAnimation()
 
-                    this.specialChargeCounter = 0;
+            this.specialChargeCounter = 0
 
-                    var damage = this.rand(17,25);
-                    this.log('You dealt ' + damage + ' critical damage to dragon!');
+            var damage = this.rand(17, 25)
+            this.log('You dealt ' + damage + ' critical damage to dragon!')
 
-                    this.dragonTakeDamage(damage);
-                },
-                heroHeal: function() {
-                    this.actionsDisabled = true;
+            this.dragonTakeDamage(damage)
+          },
+          heroHeal: function () {
+            this.actionsDisabled = true
 
-                    this.healChargeCounter++;
+            this.healChargeCounter++
 
-                    var healing = this.rand(15,25);
-                    this.log('You are healed for ' + healing + ' health!');
+            var healing = this.rand(15, 25)
+            this.log('You are healed for ' + healing + ' health!')
 
-                    this.heroHealth = this.heroHealth + healing;
+            this.heroHealth = this.heroHealth + healing
 
-                    if(this.heroHealth > this.heroMaxHealth) {
-                        this.heroHealth = this.heroMaxHealth;
-                    }
+            if (this.heroHealth > this.heroMaxHealth) {
+              this.heroHealth = this.heroMaxHealth
+            }
 
-                    vm = this;
-                    setTimeout(function() {
-                        vm.dragonAttack();
-                    }, 300);
-                },
-                heroTakeDamage: function(damage) {
-                    this.heroHealth = this.heroHealth - damage;
+            vm = this
+            setTimeout(function () {
+              vm.dragonAttack()
+            }, 300)
+          },
+          heroTakeDamage: function (damage) {
+            this.heroHealth = this.heroHealth - damage
 
-                    if(parseInt(this.heroHealth) <= 0) {
-                        this.endGame(false);
-                    }
-                },
-				heroAttackAnimation: function() {
-                    this.log('You are attacking!');
-                    this.actionsDisabled = true;
+            if (parseInt(this.heroHealth) <= 0) {
+              this.endGame(false)
+            }
+          },
+          heroAttackAnimation: function () {
+            this.log('You are attacking!')
+            this.actionsDisabled = true
 
-                    this.heroIsAttacking = true;
+            this.heroIsAttacking = true
 
-                    vm = this;
-                    setTimeout(function() {
-                        vm.heroIsAttacking = false;
-                        
-                        setTimeout(function() {
-                            vm.dragonAttack();
-                        }, 300);
-                    }, 300);
-                },
-                dragonAttack: function() {
-                    if(this.dragonHealth <= 0) {
-                        return;
-                    }
-                    var damage = this.rand(8,23);
+            vm = this
+            setTimeout(function () {
+              vm.heroIsAttacking = false
 
-                    this.dragonAttackAnimation();
+              setTimeout(function () {
+                vm.dragonAttack()
+              }, 300)
+            }, 300)
+          },
+          dragonAttack: function () {
+            if (this.dragonHealth <= 0) {
+              return
+            }
+            var damage = this.rand(8, 23)
 
-                    this.heroTakeDamage(damage);
+            this.dragonAttackAnimation()
 
-                    this.log('Dragon attacks you for ' + damage + ' damage!');
-                },
-                dragonAttackAnimation: function() {
-                    this.log('Dragon is attacking!');
-                    this.dragonIsAttacking = true;
-                    this.actionsDisabled = false;
+            this.heroTakeDamage(damage)
 
-                    vm = this;
-                    setTimeout(function() {
-                        vm.dragonIsAttacking = false;
-                    }, 300);
-                },
-                dragonTakeDamage: function(damage) {
-                    this.dragonHealth = this.dragonHealth - damage;
+            this.log('Dragon attacks you for ' + damage + ' damage!')
+          },
+          dragonAttackAnimation: function () {
+            this.log('Dragon is attacking!')
+            this.dragonIsAttacking = true
+            this.actionsDisabled = false
 
-                    console.log('')
-                    if(parseInt(this.dragonHealth) <= 0) {
-                        this.endGame(true);
-                    }
-                },
-                rand: function(min, max) {
-                    return Math.floor(Math.random() * (max - min)) + min;
-                },
-                endGame: function(heroWins) {
-                    this.gameOver = true;
-                    this.actionsDisabled = true;
+            vm = this
+            setTimeout(function () {
+              vm.dragonIsAttacking = false
+            }, 300)
+          },
+          dragonTakeDamage: function (damage) {
+            this.dragonHealth = this.dragonHealth - damage
 
-                    if(heroWins) {
-                        this.heroWins = true;
-                        this.dragonWins = false;
-                        this.log('Congratulations! You defeated the dragon!');
-                    } else {
-                        this.dragonWins = true;
-                        this.heroWins = false;
-                        this.log('Sorry! You were defeated by the dragon!');
-                    }
-                },
-                log: function(message) {
-                    this.logs.unshift(message);
-                }
-			}
-		});
-		
+            console.log('')
+            if (parseInt(this.dragonHealth) <= 0) {
+              this.endGame(true)
+            }
+          },
+          rand: function (min, max) {
+            return Math.floor(Math.random() * (max - min)) + min
+          },
+          endGame: function (heroWins) {
+            this.gameOver = true
+            this.actionsDisabled = true
+
+            if (heroWins) {
+              this.heroWins = true
+              this.dragonWins = false
+              this.log('Congratulations! You defeated the dragon!')
+            } else {
+              this.dragonWins = true
+              this.heroWins = false
+              this.log('Sorry! You were defeated by the dragon!')
+            }
+          },
+          log: function (message) {
+            this.logs.unshift(message)
+          }
+        }
+      })
     </script>
-    
+
     <style>
-        #background{background-image: url(background.png); background-repeat: no-repeat; background-size: cover; border-radius: 5px; box-shadow: 1px 2px 3px #333;}
-        .container{color: white !important; max-width: 600px;}
-        #counters{color: black !important;}
-        footer{color: #333 !important;}
+      #background {
+        background-image: url(background.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        border-radius: 5px;
+        box-shadow: 1px 2px 3px #333;
+      }
+      .container {
+        color: white !important;
+        max-width: 600px;
+      }
+      #counters {
+        color: black !important;
+      }
+      footer {
+        color: #333 !important;
+      }
 
-        /* Attack Animations */
-        .heroAttack{margin-left: 250px;}
-        .dragonAttack{position: relative; right: 250px;}
+      /* Attack Animations */
+      .heroAttack {
+        margin-left: 250px;
+      }
+      .dragonAttack {
+        position: relative;
+        right: 250px;
+      }
 
-        .isHit{animation: hit 0.5s; animation-iteration-count: 1;}
+      .isHit {
+        animation: hit 0.5s;
+        animation-iteration-count: 1;
+      }
 
-        img.death{display: none;}
+      img.death {
+        display: none;
+      }
 
-        /* Hit Animations */
-        @keyframes hit {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+      /* Hit Animations */
+      @keyframes hit {
+        0% {
+          transform: translate(1px, 1px) rotate(0deg);
         }
-
-        @media screen and (max-width: 500px) {
-            .button, .panel{font-size: 10px;}
-            .heroAttack{margin-left: 150px;}
-            .dragonAttack{position: relative; right: 250px;}
+        10% {
+          transform: translate(-1px, -2px) rotate(-1deg);
         }
+        20% {
+          transform: translate(-3px, 0px) rotate(1deg);
+        }
+        30% {
+          transform: translate(3px, 2px) rotate(0deg);
+        }
+        40% {
+          transform: translate(1px, -1px) rotate(1deg);
+        }
+        50% {
+          transform: translate(-1px, 2px) rotate(-1deg);
+        }
+        60% {
+          transform: translate(-3px, 1px) rotate(0deg);
+        }
+        70% {
+          transform: translate(3px, 1px) rotate(-1deg);
+        }
+        80% {
+          transform: translate(-1px, -1px) rotate(1deg);
+        }
+        90% {
+          transform: translate(1px, 2px) rotate(0deg);
+        }
+        100% {
+          transform: translate(1px, -2px) rotate(-1deg);
+        }
+      }
+
+      @media screen and (max-width: 500px) {
+        .button,
+        .panel {
+          font-size: 10px;
+        }
+        .heroAttack {
+          margin-left: 150px;
+        }
+        .dragonAttack {
+          position: relative;
+          right: 250px;
+        }
+      }
     </style>
-</body>
+  </body>
 </html>
